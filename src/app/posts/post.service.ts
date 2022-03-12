@@ -14,7 +14,7 @@ export class PostsService {
   getPosts() {
     this.http
       .get<{ message: string; posts: Post[] }>(
-        'https://localhost:3000/api/posts'
+        'http://localhost:3000/api/posts'
       )
       .subscribe((postData) => {
         this.posts = postData.posts;
