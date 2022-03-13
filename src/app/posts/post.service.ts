@@ -37,7 +37,9 @@ export class PostsService {
   }
 
   getPost(id: string) {
-    return { ...this.posts.find((post) => post.id === id) };
+    return this.http.get<{ _id: string; title: string; content: string }>(
+      'http://localhost:3000/api/posts/' + id
+    );
   }
 
   addPost(title: string, content: string) {
@@ -59,7 +61,13 @@ export class PostsService {
     const post: Post = { id: id, title: title, content: content };
     this.http
       .put('http://localhost:3000/api/posts/' + id, post)
-      .subscribe((response) => console.log({ response }));
+      .subscribe((response) => {
+        const updatedPosts = [...this.posts];
+        const oldPostIndex = updatedPosts.findIndex((p) => p.id === post.id);
+        updatedPosts[oldPostIndex] = post;
+        this.posts = updatedPosts;
+        this.postsUpdated.next([...this.posts]);
+      });
   }
 
   deletePost(postId: string) {
